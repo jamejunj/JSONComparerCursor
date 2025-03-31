@@ -1,5 +1,6 @@
 import { DiffEditor } from '@monaco-editor/react';
 import styled from '@emotion/styled';
+import { useTheme } from '../context/ThemeContext';
 
 interface JsonDiffEditorProps {
   original: string;
@@ -12,18 +13,18 @@ const EditorContainer = styled.div`
   gap: 0;
   flex: 1;
   min-width: 0;
-  border: 1px solid #94a3b8;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   overflow: hidden;
 `;
 
 const Label = styled.label`
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
   font-size: 1.1em;
   padding: 8px 12px;
-  background-color: #f8fafc;
-  border-bottom: 1px solid #94a3b8;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
 `;
 
 const EditorWrapper = styled.div`
@@ -32,6 +33,8 @@ const EditorWrapper = styled.div`
 `;
 
 const JsonDiffEditor = ({ original, modified }: JsonDiffEditorProps) => {
+  const { isDarkMode } = useTheme();
+
   return (
     <EditorContainer>
       <Label>Differences</Label>
@@ -41,7 +44,7 @@ const JsonDiffEditor = ({ original, modified }: JsonDiffEditorProps) => {
           language="json"
           original={original}
           modified={modified}
-          theme="vs-light"
+          theme={isDarkMode ? 'vs-dark' : 'vs-light'}
           options={{
             minimap: { enabled: false },
             fontSize: 14,
@@ -52,9 +55,41 @@ const JsonDiffEditor = ({ original, modified }: JsonDiffEditorProps) => {
             renderSideBySide: true,
             readOnly: true,
             diffWordWrap: 'on',
-            renderWhitespace: 'all',
             originalEditable: false,
-            padding: { top: 0, bottom: 0 },
+            padding: { top: 8, bottom: 8 },
+            lineDecorationsWidth: 0,
+            lineNumbersMinChars: 3,
+            scrollbar: {
+              vertical: 'visible',
+              horizontal: 'visible',
+              useShadows: false,
+              verticalScrollbarSize: 10,
+              horizontalScrollbarSize: 10,
+              verticalSliderSize: 10,
+              horizontalSliderSize: 10,
+              arrowSize: 30,
+            },
+            diffOverviewRulerWidth: 0,
+            renderIndentGuides: 'on',
+            renderLineHighlight: isDarkMode ? 'all' : 'none',
+            overviewRulerBorder: false,
+            overviewRulerLanes: 0,
+            hideCursorInOverviewRuler: true,
+            matchBrackets: 'always',
+            renderFinalNewline: true,
+            renderLineHighlightOnlyWhenFocus: false,
+            renderValidationDecorations: 'off',
+            renderWhitespace: 'none',
+            rulers: [],
+            showFoldingControls: 'always',
+            showUnused: true,
+            snippetSuggestions: 'none',
+            smoothScrolling: true,
+            tabSize: 2,
+            useTabStops: true,
+            wordBasedSuggestions: 'off',
+            wrappingIndent: 'indent',
+            wrappingStrategy: 'advanced',
           }}
         />
       </EditorWrapper>
