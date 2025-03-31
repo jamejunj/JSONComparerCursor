@@ -191,7 +191,7 @@ const AppContent = () => {
       <DarkModeToggle />
       <Header>
         <Title>JSON Comparer</Title>
-        <AdSense slot="header-ad" format="horizontal" />
+        <AdSense slot="2757156704" format="horizontal" />
       </Header>
       <EditorsContainer>
         <JsonEditor
@@ -229,7 +229,7 @@ const AppContent = () => {
             identicalMessage={hasNoDifferences ? "The JSONs are identical" : undefined}
           />
         )}
-        <AdSense slot="results-ad" format="horizontal" />
+        <AdSense slot="2757156704" format="horizontal" />
       </ResultsWrapper>
       <SettingsModal
         isOpen={showSettings}
