@@ -41,7 +41,7 @@ const ResultsContainer = styled.div`
   flex-direction: column;
   gap: 20px;
   padding: 20px;
-  background-color: #f5f5f5;
+  background-color: var(--bg-secondary);
   border-radius: 8px;
   width: 100%;
   box-sizing: border-box;
@@ -56,33 +56,34 @@ const Section = styled.div`
 
 const SectionTitle = styled.h3`
   margin: 0;
-  color: #333;
+  color: var(--text-primary);
   font-size: 1.2em;
   padding-bottom: 8px;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid var(--border-color);
 `;
 
 const ResultItem = styled.div`
   padding: 12px;
-  background-color: white;
+  background-color: var(--bg-primary);
   border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--shadow-color);
   word-break: break-word;
   line-height: 1.5;
+  border: 1px solid var(--border-color);
 `;
 
 const ErrorText = styled.span`
-  color: #dc3545;
+  color: var(--error-color);
   font-weight: bold;
 `;
 
 const WarningText = styled.span`
-  color: #ffc107;
+  color: var(--warning-color);
   font-weight: bold;
 `;
 
 const InfoText = styled.span`
-  color: #17a2b8;
+  color: var(--info-color);
   font-weight: bold;
 `;
 

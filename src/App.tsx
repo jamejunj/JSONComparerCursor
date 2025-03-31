@@ -5,6 +5,8 @@ import JsonDiffEditor from './components/JsonDiffEditor'
 import ComparisonResults from './components/ComparisonResults'
 import SettingsModal from './components/SettingsModal'
 import { compareJson, parseJson, formatJson } from './utils/jsonComparer'
+import { ThemeProvider } from './context/ThemeContext'
+import DarkModeToggle from './components/DarkModeToggle'
 
 const AppContainer = styled.div`
   width: 100%;
@@ -14,6 +16,8 @@ const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 `
 
 const Header = styled.header`
@@ -22,7 +26,7 @@ const Header = styled.header`
 `
 
 const Title = styled.h1`
-  color: #333;
+  color: var(--text-primary);
   margin: 0;
   font-size: 2em;
 `
@@ -44,7 +48,7 @@ const ResultsWrapper = styled.div`
 const CompareButton = styled.button`
   padding: 12px 24px;
   font-size: 1.1em;
-  background-color: #4CAF50;
+  background-color: var(--accent-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -52,11 +56,11 @@ const CompareButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: #45a049;
+    background-color: var(--accent-hover);
   }
 
   &:disabled {
-    background-color: #cccccc;
+    background-color: var(--text-secondary);
     cursor: not-allowed;
   }
 `
@@ -71,7 +75,7 @@ const ButtonGroup = styled.div`
 const SettingsButton = styled.button`
   padding: 12px 24px;
   font-size: 1.1em;
-  background-color: #2196F3;
+  background-color: var(--info-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -79,7 +83,8 @@ const SettingsButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: #1976D2;
+    background-color: var(--info-color);
+    opacity: 0.9;
   }
 `
 
@@ -124,24 +129,19 @@ interface Settings {
   };
 }
 
-const App = () => {
+const AppContent = () => {
   const [json1, setJson1] = useState(formatJson({}))
   const [json2, setJson2] = useState(formatJson({}))
   const [formattedJson1, setFormattedJson1] = useState(formatJson({}))
   const [formattedJson2, setFormattedJson2] = useState(formatJson({}))
   const [showDiff, setShowDiff] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
+  const [comparisonResult, setComparisonResult] = useState<ComparisonResult | null>(null)
   const [settings, setSettings] = useState<Settings>({
-    valueMismatches: { enabled: true, logLevel: 'Info' },
+    valueMismatches: { enabled: true, logLevel: 'Warning' },
     typeMismatches: { enabled: true, logLevel: 'Warning' },
     missingProperties: { enabled: true, logLevel: 'Warning' },
     arrayLengthMismatches: { enabled: true, logLevel: 'Warning' },
-  })
-  const [comparisonResults, setComparisonResults] = useState<ComparisonResult>({
-    valueMismatches: [],
-    typeMismatches: [],
-    missingProperties: [],
-    arrayLengthMismatches: [],
   })
 
   const handleJsonChange = (value: string, isFirst: boolean) => {
@@ -165,7 +165,7 @@ const App = () => {
       setFormattedJson2(formatted2);
       
       const results = compareJson(parsed1, parsed2);
-      setComparisonResults(results);
+      setComparisonResult(results);
       setShowDiff(true);
     }
   }
@@ -179,16 +179,15 @@ const App = () => {
     }
   }
 
-  const canCompare = isJsonValid(json1) && isJsonValid(json2);
-
   const hasNoDifferences = 
-    comparisonResults.valueMismatches.length === 0 &&
-    comparisonResults.typeMismatches.length === 0 &&
-    comparisonResults.missingProperties.length === 0 &&
-    comparisonResults.arrayLengthMismatches.length === 0;
+    comparisonResult?.valueMismatches.length === 0 &&
+    comparisonResult?.typeMismatches.length === 0 &&
+    comparisonResult?.missingProperties.length === 0 &&
+    comparisonResult?.arrayLengthMismatches.length === 0;
 
   return (
     <AppContainer>
+      <DarkModeToggle />
       <Header>
         <Title>JSON Comparer</Title>
       </Header>
@@ -205,8 +204,8 @@ const App = () => {
         />
       </EditorsContainer>
       <ButtonGroup>
-        <CompareButton onClick={handleCompare} disabled={!canCompare}>
-          Compare JSONs
+        <CompareButton onClick={handleCompare} disabled={!isJsonValid(json1) || !isJsonValid(json2)}>
+          Compare
         </CompareButton>
         <SettingsButton onClick={() => setShowSettings(true)}>
           Settings
@@ -221,17 +220,12 @@ const App = () => {
         </EditorsContainer>
       )}
       <ResultsWrapper>
-        {hasNoDifferences && showDiff ? (
+        {comparisonResult && (
           <ComparisonResults
-            {...comparisonResults}
-            settings={{
-              ...settings,
-              valueMismatches: { ...settings.valueMismatches, enabled: true },
-            }}
-            identicalMessage="JSONs are identical"
+            {...comparisonResult}
+            settings={settings}
+            identicalMessage={hasNoDifferences ? "The JSONs are identical" : undefined}
           />
-        ) : (
-          <ComparisonResults {...comparisonResults} settings={settings} />
         )}
       </ResultsWrapper>
       <SettingsModal
@@ -243,5 +237,13 @@ const App = () => {
     </AppContainer>
   )
 }
+
+const App = () => {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+};
 
 export default App

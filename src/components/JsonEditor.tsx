@@ -1,6 +1,7 @@
 import { Editor } from '@monaco-editor/react';
 import styled from '@emotion/styled';
 import { useRef } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 interface JsonEditorProps {
   value: string;
@@ -14,31 +15,31 @@ const EditorContainer = styled.div`
   gap: 0;
   flex: 1;
   min-width: 0;
-  border: 1px solid #94a3b8;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   overflow: hidden;
 `;
 
 const Label = styled.label`
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
   font-size: 1.1em;
   padding: 8px 12px;
-  background-color: #f8fafc;
-  border-bottom: 1px solid #94a3b8;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
 `;
 
 const Toolbar = styled.div`
   display: flex;
   gap: 8px;
   padding: 8px 12px;
-  background-color: #f8fafc;
-  border-bottom: 1px solid #94a3b8;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
 `;
 
 const Button = styled.button`
   padding: 4px 8px;
-  background-color: #3b82f6;
+  background-color: var(--accent-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -47,7 +48,7 @@ const Button = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: #2563eb;
+    background-color: var(--accent-hover);
   }
 `;
 
@@ -62,6 +63,7 @@ const EditorWrapper = styled.div`
 
 const JsonEditor = ({ value, onChange, label }: JsonEditorProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { isDarkMode } = useTheme();
 
   const handleFormat = () => {
     try {
@@ -100,13 +102,13 @@ const JsonEditor = ({ value, onChange, label }: JsonEditorProps) => {
     <EditorContainer>
       <Label>{label}</Label>
       <Toolbar>
-        <Button onClick={handleFormat}>Format JSON</Button>
+        <Button onClick={handleFormat}>Format</Button>
         <Button onClick={handleUpload}>Upload JSON</Button>
         <FileInput
           type="file"
+          accept=".json"
           ref={fileInputRef}
           onChange={handleFileChange}
-          accept=".json"
         />
       </Toolbar>
       <EditorWrapper>
@@ -115,15 +117,13 @@ const JsonEditor = ({ value, onChange, label }: JsonEditorProps) => {
           defaultLanguage="json"
           value={value}
           onChange={(value) => onChange(value || '')}
-          theme="vs-light"
+          theme={isDarkMode ? 'vs-dark' : 'vs-light'}
           options={{
             minimap: { enabled: false },
             fontSize: 14,
             lineNumbers: 'on',
             scrollBeyondLastLine: false,
-            wordWrap: 'on',
             automaticLayout: true,
-            padding: { top: 0, bottom: 0 },
           }}
         />
       </EditorWrapper>
