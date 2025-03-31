@@ -7,6 +7,7 @@ import SettingsModal from './components/SettingsModal'
 import { compareJson, parseJson, formatJson } from './utils/jsonComparer'
 import { ThemeProvider } from './context/ThemeContext'
 import DarkModeToggle from './components/DarkModeToggle'
+import AdSense from './components/AdSense'
 
 const AppContainer = styled.div`
   width: 100%;
@@ -190,6 +191,7 @@ const AppContent = () => {
       <DarkModeToggle />
       <Header>
         <Title>JSON Comparer</Title>
+        <AdSense slot="header-ad" format="horizontal" />
       </Header>
       <EditorsContainer>
         <JsonEditor
@@ -227,6 +229,7 @@ const AppContent = () => {
             identicalMessage={hasNoDifferences ? "The JSONs are identical" : undefined}
           />
         )}
+        <AdSense slot="results-ad" format="horizontal" />
       </ResultsWrapper>
       <SettingsModal
         isOpen={showSettings}
