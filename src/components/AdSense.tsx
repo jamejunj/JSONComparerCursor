@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 
 interface AdSenseProps {
@@ -20,20 +20,36 @@ const AdContainer = styled.div`
 `;
 
 const AdSense = ({ slot, format = 'auto', style }: AdSenseProps) => {
+  const adRef = useRef<HTMLDivElement>(null);
+  const adLoaded = useRef(false);
+
   useEffect(() => {
-    try {
-      // @ts-ignore
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (error) {
-      console.error('Error loading AdSense:', error);
+    if (!adLoaded.current && adRef.current) {
+      try {
+        // @ts-ignore
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+        adLoaded.current = true;
+      } catch (error) {
+        console.error('Error loading AdSense:', error);
+      }
     }
+
+    // Cleanup function
+    return () => {
+      if (adRef.current) {
+        const ins = adRef.current.querySelector('ins.adsbygoogle');
+        if (ins) {
+          ins.remove();
+        }
+      }
+    };
   }, []);
 
   return (
-    <AdContainer style={style}>
+    <AdContainer ref={adRef} style={style}>
       <ins
         className="adsbygoogle"
-        style={{ display: 'block' }}
+        style={{ display: 'block', minWidth: '320px', minHeight: '100px' }}
         data-ad-client="ca-pub-3687951221764937"
         data-ad-slot={slot}
         data-ad-format={format}

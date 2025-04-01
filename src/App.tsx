@@ -229,7 +229,7 @@ const AppContent = () => {
             identicalMessage={hasNoDifferences ? "The JSONs are identical" : undefined}
           />
         )}
-        <AdSense slot="2757156704" format="horizontal" />
+        <AdSense slot="8955277784" format="horizontal" />
       </ResultsWrapper>
       <SettingsModal
         isOpen={showSettings}
